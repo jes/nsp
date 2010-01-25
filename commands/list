@@ -1,0 +1,11 @@
+#!/bin/sh
+#Listing of the NSP commands
+#James Stanley
+
+#This prints out, in one line, a sorted list of all files with the execute bit
+#set for anyone, that aren't directories, that do not end in a tilde, and do
+#not contain a '.', ' ' (space) or '\'.
+#This is a good approximation of the set of commands that are executable by nsp.
+#You can create 'secret' commands by putting a space in the filename.
+
+echo `{ find -L -maxdepth 1 -mindepth 1 ! -name '*~' ! -name '*.*' ! -name '*\\*' ! -name '* *' -perm /111 -type f -executable | sort; } | sed 's/.\///g'`

@@ -1,0 +1,13 @@
+#!/usr/bin/awk -f
+#Uptime command for NSP
+#James Stanley
+
+BEGIN {
+    getline < "/proc/uptime";
+    print $1 " seconds";
+    days = $1 / 86400;
+    hours = (days * 24) % 24;
+    minutes = (hours * 60) % 60;
+    seconds = (minutes * 60) % 60;
+    printf("%d days, %02d:%02d:%02d\n", days, hours, minutes, seconds);
+}

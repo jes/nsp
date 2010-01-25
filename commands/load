@@ -1,0 +1,9 @@
+#!/usr/bin/awk -f
+#CPU load command for NSP
+#Output is suitable for humans or machines
+#James Stanley
+
+BEGIN {
+    getline < "/proc/loadavg";
+    print $1 " " $2 " " $3;
+}
