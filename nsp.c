@@ -24,7 +24,7 @@ int nodes = 0;
 int simultaneity = HOST_FIRST;
 int show_host = 0;
 int show_cmd = 0;
-int readable = BOTH;
+int readable = HUMAN;
 char *argv0;
 
 void usage(void) {
@@ -36,13 +36,15 @@ void usage(void) {
           "Options:\n"
           "  -a              - Always print hostnames before command output.\n"
           "  -A              - Always print command names before output.\n"
-          "  -c command_file - Read commands from this file.\n"
-          "  -C command      - Add this to the command list.\n"
+          "  -b              - Output both machine-readable and "
+          "human-readable responses (see -m).\n"
+          "  -c command_file - Read commands from this file (see -n).\n"
+          "  -C command      - Add this to the command list(see -N).\n"
           "  -h              - Show this help.\n"
-          "  -H              - Output human-readable response only.\n"
-          "  -m              - Output machine-readable response only.\n"
-          "  -n node_file    - Read node hostnames from this file.\n"
-          "  -N node         - Add this to the node list.\n"
+          "  -m              - Output machine-readable response only (see "
+          "-b).\n"
+          "  -n node_file    - Read node hostnames from this file (see -c).\n"
+          "  -N node         - Add this to the node list (see -C).\n"
           "  -s              - Toggle simultaneity.\n"
           "\n"
           "Simultaneity is how to handle ordering of commands. The default is "
@@ -242,13 +244,16 @@ int main(int argc, char **argv) {
   opterr = 1;
 
   /* parse some options */
-  while((c = getopt(argc, argv, "aAc:C:hHn:N:ms")) != -1) {
+  while((c = getopt(argc, argv, "aAvc:C:hn:N:ms")) != -1) {
     switch(c) {
     case 'a':
       show_host = 1;
       break;
     case 'A':
       show_cmd = 1;
+      break;
+    case 'H':
+      readable = BOTH;
       break;
     case 'c':
       read_list(&command, &commands, optarg);
@@ -259,9 +264,6 @@ int main(int argc, char **argv) {
     case 'h':
       usage();
       return 1;
-      break;
-    case 'H':
-      readable = HUMAN;
       break;
     case 'm':
       readable = MACHINE;
