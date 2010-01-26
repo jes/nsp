@@ -3,6 +3,8 @@
    James Stanley */
 
 #include <sys/param.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -24,6 +26,7 @@ int main(int argc, char **argv) {
   char *cmd = path + 2;/* the command portion of the path */
   char *p;
   int c;
+  struct stat stat_buf;
 
   /* getopt can print our errors for us */
   opterr = 1;
@@ -40,7 +43,7 @@ int main(int argc, char **argv) {
       break;
     default:/* uh-oh! what do we do here? */
       fprintf(stderr, "fail\n");
-      fprintf(stderr, "Error parsing options.\n");
+      fprintf(stderr, "failure: Error parsing options.\n");
       return 1;
       break;
     }
@@ -55,7 +58,7 @@ int main(int argc, char **argv) {
   } else {
     if(!feof(stdin)) {
       printf("fail\n");
-      printf("Command name too long.\n");
+      printf("failure: Command name too long.\n");
     }
     return 1;
   }
@@ -66,7 +69,14 @@ int main(int argc, char **argv) {
      || strchr(cmd, '/')
      || strchr(cmd, '\\')) {
     printf("forbid\n");
-    printf("You are not allowed to run queries like that.\n");
+    printf("forbidden: You are not allowed to run queries like that.\n");
+    return 1;
+  }
+
+  /* check that it exists */
+  if(stat(path, &stat_buf) == -1) {
+    printf("unknown\n");
+    printf("unknown: The server does not know that query.\n");
     return 1;
   }
 
@@ -74,8 +84,8 @@ int main(int argc, char **argv) {
   execl(path, cmd, NULL);
 
   /* failure */
-  printf("unknown\n");
-  perror("execl");
+  printf("fail\n");
+  printf("failure: Unable to run query.\n");
 
   return 1;
 }
