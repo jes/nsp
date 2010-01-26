@@ -98,10 +98,10 @@ void read_list(char ***list, int *len, const char *filename) {
   while(fgets(line, 1024, fp)) {
     linenum++;
 
-    if(!(p = strchr(line, '\n'))) {/* line too long */
+    if(!(p = strchr(line, '\n')) && strlen(line) == 1023) {/* line too long */
       fprintf(stderr, "%s:%s:%d: line too long.\n", argv0, filename, linenum);
     } else {/* remove endline and add copy to list */
-      *p = '\0';
+      if(p) *p = '\0';
       add_list(list, len, strdup(line));
     }
   }
