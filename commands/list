@@ -8,4 +8,4 @@
 #This is a good approximation of the set of commands that are executable by nsp.
 #You can create 'secret' commands by putting a space in the filename.
 
-echo `{ find -L -maxdepth 1 -mindepth 1 ! -name '*~' ! -name '*.*' ! -name '*\\*' ! -name '* *' -perm /111 -type f -executable | sort; } | sed 's/.\///g'`
+echo `{ find -L . -maxdepth 1 -mindepth 1 ! -name '*~' ! -name '*.*' ! -name '*\\*' ! -name '* *' -perm -111 -type f | sort; } | sed 's/.\///g'`
