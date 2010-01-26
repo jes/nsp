@@ -131,8 +131,8 @@ void net_output(FILE *out, const char *host, const char *cmd, char *line) {
 
 /* Runs the given command on the given node and prints the output,
    prefixed with the hostname if show_host is non-zero.
-   Warning: If host contains a colon, we will replace it with a NUL byte (but put
-   it back before returning)
+   Warning: If host contains a colon, we will replace it with a NUL byte (but
+   put it back before returning)
    If readable is:  We print:
    BOTH             All lines
    HUMAN            All lines except the first unless there is only one

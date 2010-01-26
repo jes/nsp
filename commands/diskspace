@@ -5,5 +5,5 @@
 
 FS=/
 
-df -kP $FS | tail -n1 | awk '{ print $4 " 1K-blocks." }'
+df -kP $FS | tail -n1 | awk '{ print $4 " 1K-blocks free." }'
 df -h $FS | tail -n1 | awk '{print $4 " free, " $3 " used." }'
