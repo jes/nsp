@@ -69,14 +69,14 @@ int main(int argc, char **argv) {
      || strchr(cmd, '/')
      || strchr(cmd, '\\')) {
     printf("forbid\n");
-    printf("forbidden: You are not allowed to run queries like that.\n");
+    printf("forbidden: You are not allowed to run queries like '%s'.\n", cmd);
     return 1;
   }
 
   /* check that it exists */
   if(stat(path, &stat_buf) == -1) {
     printf("unknown\n");
-    printf("unknown: The server does not know that query.\n");
+    printf("unknown: The server does not know '%s'.\n", cmd);
     return 1;
   }
 
@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 
   /* failure */
   printf("fail\n");
-  printf("failure: Unable to run query.\n");
+  printf("failure: Unable to run query '%s'.\n", cmd);
 
   return 1;
 }
