@@ -1,9 +1,9 @@
 #!/bin/sh
 #Disk space command for NSP
 #First line shows free 1k blocks
-#Second line shows free space and percentage used
+#Second line shows free space and used space
 
 FS=/
 
 df -kP $FS | tail -n1 | awk '{ print $4 }'
-df -h $FS | tail -n1 | awk '{print $4 " free, " $5 " used." }'
+df -h $FS | tail -n1 | awk '{print $4 " free, " $3 " used." }'
