@@ -39,7 +39,7 @@ void usage(void) {
           "  -b              - Output both machine-readable and "
           "human-readable responses (see -m).\n"
           "  -c command_file - Read commands from this file (see -n).\n"
-          "  -C command      - Add this to the command list(see -N).\n"
+          "  -C command      - Add this to the command list (see -N).\n"
           "  -h              - Show this help.\n"
           "  -m              - Output machine-readable response only (see "
           "-b).\n"
