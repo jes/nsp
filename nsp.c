@@ -31,7 +31,7 @@ void usage(void) {
   fprintf(stderr,
           "nsp - Network Statistics Protocol client\n"
           "Usage: nsp [-n node_file] [-N node] [-c command_file] [-C command] "
-          "[-ahs] [NODE] [COMMANDS]\n"
+          "[-aAbhms] [NODE] [COMMANDS]\n"
           "\n"
           "Options:\n"
           "  -a              - Always print hostnames before command output.\n"
