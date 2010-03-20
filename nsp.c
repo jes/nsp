@@ -244,7 +244,7 @@ int main(int argc, char **argv) {
   opterr = 1;
 
   /* parse some options */
-  while((c = getopt(argc, argv, "aAvc:C:hn:N:ms")) != -1) {
+  while((c = getopt(argc, argv, "aAbc:C:hn:N:ms")) != -1) {
     switch(c) {
     case 'a':
       show_host = 1;
@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
     case 'A':
       show_cmd = 1;
       break;
-    case 'H':
+    case 'b':
       readable = BOTH;
       break;
     case 'c':

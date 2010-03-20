@@ -15,9 +15,10 @@ install: all
 	for cmd in $(COMMANDS); do \
 		install -m 0755 commands/$$cmd $(PREFIX)/bin/nspd ; \
 	done
-	echo "Now add a line like:"
-	echo " 198 stream tcp nowait nobody /usr/sbin/nspd nspd -d /usr/bin/nspd"
-	echo "to /etc/inetd.conf and send inetd a SIGHUP."
+	printf -- "---------\n\
+	Now add a line like:\n\
+	 198 stream tcp nowait nobody /usr/sbin/nspd nspd -d /usr/bin/nspd\n\
+	to /etc/inetd.conf and send inetd a SIGHUP.\n"
 .PHONY: install
 
 clean:
