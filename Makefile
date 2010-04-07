@@ -2,7 +2,7 @@
 
 CFLAGS=-Wall
 LDFLAGS=
-PREFIX=/usr
+PREFIX=/usr/local
 COMMANDS=diskspace list load uptime
 
 all: nsp nspd
@@ -17,7 +17,9 @@ install: all
 	done
 	printf -- "---------\n\
 	Now add a line like:\n\
-	 198 stream tcp nowait nobody /usr/sbin/nspd nspd -d /usr/bin/nspd\n\
+	 nsp 198/tcp\n\
+	to /etc/services, a line like:\
+	 nsp stream tcp nowait nobody $(PREFIX)/sbin/nspd nspd -d $(PREFIX)/bin/nspd\n\
 	to /etc/inetd.conf and send inetd a SIGHUP.\n"
 .PHONY: install
 
