@@ -10,9 +10,15 @@
 #include <netdb.h>
 #include <stdio.h>
 
+/* all commands for one host, then move to the next */
 #define HOST_FIRST 0
+/* all hosts for one command, then move to the next */
 #define CMD_FIRST 1
 
+/* size of buffer for reading lines from files and network */
+#define BUF_SIZ 4096
+
+/* human-readable, machine-readable, or both? */
 #define BOTH 0
 #define HUMAN 1
 #define MACHINE 2
@@ -84,9 +90,10 @@ void add_list(char ***list, int *len, char *item) {
 /* Reads lines from filename, adding each one to list with add_list() */
 void read_list(char ***list, int *len, const char *filename) {
   FILE *fp;
-  char line[1024];
+  char line[BUF_SIZ];
   char *p;
   int linenum = 0;
+  int c;
 
   /* open the file for reading */
   if(!(fp = fopen(filename, "r"))) {
@@ -95,11 +102,14 @@ void read_list(char ***list, int *len, const char *filename) {
   }
 
   /* add each line to the list */
-  while(fgets(line, 1024, fp)) {
+  while(fgets(line, BUF_SIZ, fp)) {
     linenum++;
 
-    if(!(p = strchr(line, '\n')) && strlen(line) == 1023) {/* line too long */
+    if(!(p = strchr(line, '\n')) && strlen(line) == (BUF_SIZ - 1)) {/* line too long */
       fprintf(stderr, "%s:%s:%d: line too long.\n", argv0, filename, linenum);
+
+      /* now get the rest of the line out of the way */
+      while(((c = getchar()) != '\n') && (c != EOF));
     } else {/* remove endline and add copy to list */
       if(p) *p = '\0';
       add_list(list, len, strdup(line));
@@ -125,7 +135,7 @@ void net_output(FILE *out, const char *host, const char *cmd, char *line) {
 
   fprintf(out, "%s\n", line);
 
-  /* restore nul byte */
+  /* restore endline */
   if(p) *p = '\n';
 }
 
@@ -141,8 +151,8 @@ void run_query(char *host, const char *command) {
   struct addrinfo *addr;
   struct addrinfo *a;
   struct addrinfo hints;
-  char line1[1024];
-  char line[1024];
+  char line1[BUF_SIZ];
+  char line[BUF_SIZ];
   char *l1;
   char *port;
   char *p = NULL;
@@ -201,7 +211,7 @@ void run_query(char *host, const char *command) {
   fprintf(net, "%s\n", command);
   
   /* read first line of response */
-  if(!(l1 = fgets(line1, 1024, net)) || readable == MACHINE) {
+  if(!(l1 = fgets(line1, BUF_SIZ, net)) || readable == MACHINE) {
     /* eof with no data, or we only want the first line */
     if(l1) net_output(stdout, host, command, line1);
     else net_output(stdout, host, command, "no data.");
@@ -214,7 +224,7 @@ void run_query(char *host, const char *command) {
   if(readable == BOTH) net_output(stdout, host, command, line1);
 
   /* read response lines */
-  while(fgets(line, 1024, net)) {
+  while(fgets(line, BUF_SIZ, net)) {
     printfirst = 0;
     net_output(stdout, host, command, line);
   }
