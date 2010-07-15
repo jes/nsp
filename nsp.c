@@ -82,7 +82,7 @@ void add_list(char ***list, int *len, char *item) {
     fprintf(stderr, "%s: realloc returned NULL.\n", argv0);
     exit(1);
   }
-  
+
   /* add item; increment length */
   (*list)[(*len)++] = item;
 }
@@ -159,7 +159,7 @@ void run_query(char *host, const char *command) {
   int fd;
   FILE *net;
   int printfirst = 1;
-  
+
   /* if there's a colon, remove it and get a pointer to the port number */
   if((p = strchr(host, ':'))) {
     *p = '\0';
@@ -209,17 +209,16 @@ void run_query(char *host, const char *command) {
 
   /* send our command */
   fprintf(net, "%s\n", command);
-  
+
   /* read first line of response */
   if(!(l1 = fgets(line1, BUF_SIZ, net)) || readable == MACHINE) {
-    /* eof with no data, or we only want the first line */
+    /* we only want the first line */
     if(l1) net_output(stdout, host, command, line1);
-    else net_output(stdout, host, command, "no data.");
     fclose(net);
     if(p) *p = ':';
     return;
   }
-  
+
   /* output first line if we definitely want it */
   if(readable == BOTH) net_output(stdout, host, command, line1);
 
@@ -234,7 +233,7 @@ void run_query(char *host, const char *command) {
 
   /* all done, dc socket */
   fclose(net);
- 
+
   freeaddrinfo(addr);
 
   if(p) *p = ':';
@@ -299,7 +298,7 @@ int main(int argc, char **argv) {
   for(i = optind; i < argc; i++) {
     add_list(&command, &commands, argv[i]);
   }
-  
+
   /* now decide in which order to run this show */
   switch(simultaneity) {
   case HOST_FIRST:/* all commands for the host, then next host, etc.*/
