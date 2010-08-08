@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 #ifndef VERSION
-#define VERSION "version unknown"
+#define VERSION "(version unknown)"
 #endif
 
 /* all commands for one host, then move to the next */
@@ -50,7 +50,7 @@ void usage(void) {
   fprintf(stderr,
   "nsp %s - network statistics protocol client\n"
   "Usage: nsp [-n node_file] [-N node] [-c command_file] [-C command] \n"
-  "           [-aAbhms] [NODE] [COMMANDS...]\n"
+  "           [-aAbhmsV] [NODE] [COMMANDS...]\n"
   "\n"
   "Options:\n"
   "  -a               Always print hostnames before command output\n"

@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 #ifndef VERSION
-#define VERSION "version unknown"
+#define VERSION "(version unknown)"
 #endif
 
 void version(void) {
@@ -20,7 +20,7 @@ void version(void) {
 void usage(void) {
   printf(
   "nspd %s - network statistics protocol Daemon\n"
-  "Usage: nspd [-d directory] [-h]\n"
+  "Usage: nspd [-d directory] [-hV]\n"
   "\n"
   "Options:\n"
   "  -d directory   Run commands in directory\n"
