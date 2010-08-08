@@ -1,6 +1,6 @@
 #Makefile for NSP
 
-VERSION?="0.1 tagged (2010-08-08)"
+VERSION?="0.2 development"
 PREFIX?=/usr/local
 
 CFLAGS=-Wall -DVERSION=\"$(VERSION)\"
