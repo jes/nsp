@@ -9,16 +9,25 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#ifndef VERSION
+#define VERSION "version unknown"
+#endif
+
+void version(void) {
+  printf("nspd %s\n", VERSION);
+}
+
 void usage(void) {
-  fprintf(stderr,
-          "nspd - Network Statistics Protocol Daemon\n"
-          "Usage: nspd [-d directory] [-h]\n"
-          "\n"
-          "Options:\n"
-          "  -d directory   Run commands in directory\n"
-          "  -h             Display this help\n"
-          "Note that this program should be run from inetd.\n"
-          );
+  printf(
+  "nspd %s - network statistics protocol Daemon\n"
+  "Usage: nspd [-d directory] [-h]\n"
+  "\n"
+  "Options:\n"
+  "  -d directory   Run commands in directory\n"
+  "  -h             Display this help\n"
+  "  -V             Show version\n"
+  "Note that this program should be run from inetd.\n"
+  , VERSION);
 }
 
 int main(int argc, char **argv) {
@@ -32,14 +41,18 @@ int main(int argc, char **argv) {
   opterr = 1;
 
   /* parse some options */
-  while((c = getopt(argc, argv, "d:h")) != -1) {
+  while((c = getopt(argc, argv, "d:hV")) != -1) {
     switch(c) {
     case 'd':/* set directory for commands */
       chdir(optarg);
       break;
     case 'h':/* print help */
       usage();
-      return 1;
+      return 0;
+      break;
+    case 'V':/* print version */
+      version();
+      return 0;
       break;
     default:/* uh-oh! what do we do here? */
       fprintf(stderr, "fail\n");

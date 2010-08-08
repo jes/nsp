@@ -10,6 +10,10 @@
 #include <netdb.h>
 #include <stdio.h>
 
+#ifndef VERSION
+#define VERSION "version unknown"
+#endif
+
 /* all commands for one host, then move to the next */
 #define HOST_FIRST 0
 /* all hosts for one command, then move to the next */
@@ -38,9 +42,13 @@ int iswhite(int c) {
   return c == ' ' || c == '\t' || c == '\n';
 }
 
+void version(void) {
+  printf("nsp %s\n", VERSION);
+}
+
 void usage(void) {
   fprintf(stderr,
-  "nsp - Network Statistics Protocol client\n"
+  "nsp %s - network statistics protocol client\n"
   "Usage: nsp [-n node_file] [-N node] [-c command_file] [-C command] \n"
   "           [-aAbhms] [NODE] [COMMANDS]\n"
   "\n"
@@ -56,6 +64,7 @@ void usage(void) {
   "  -n node_file     Read node hostnames from this file\n"
   "  -N node          Add this to the node list\n"
   "  -s               Toggle simultaneity\n"
+  "  -V               Show version\n"
   "\n"
   "Simultaneity is how to handle ordering of commands. The default is to send\n"
   "all commands to one node, then all commands to the next, and so on.\n"
@@ -76,7 +85,7 @@ void usage(void) {
   "  nsp -H -a node1 load\n"
   "\n"
   "Report bugs to James Stanley <james@incoherency.co.uk>\n"
-  );
+  , VERSION);
 }
 
 /* Reallocates list to be one element longer, adds item as the last valid
@@ -263,52 +272,31 @@ int main(int argc, char **argv) {
   int c;
   int i, j;
 
-  if(argc <= 2) {
-    usage();
-    return 1;
-  }
-
   argv0 = argv[0];
 
   opterr = 1;
 
   /* parse some options */
-  while((c = getopt(argc, argv, "aAbc:C:hn:N:ms")) != -1) {
+  while((c = getopt(argc, argv, "aAbc:C:hmn:N:sV")) != -1) {
     switch(c) {
-    case 'a':
-      show_host = 1;
-      break;
-    case 'A':
-      show_cmd = 1;
-      break;
-    case 'b':
-      readable = BOTH;
-      break;
-    case 'c':
-      read_list(&command, &commands, optarg);
-      break;
-    case 'C':
-      add_list(&command, &commands, optarg);
-      break;
-    case 'h':
-      usage();
-      return 1;
-      break;
-    case 'm':
-      readable = MACHINE;
-      break;
-    case 'n':
-      read_list(&node, &nodes, optarg);
-      break;
-    case 'N':
-      add_list(&node, &nodes, optarg);
-    case 's':
-      simultaneity = !simultaneity;
-      break;
-    default:
-      return 1;
-      break;
+    case 'a': show_host = 1;                          break;
+    case 'A': show_cmd = 1;                           break;
+    case 'b': readable = BOTH;                        break;
+    case 'c': read_list(&command, &commands, optarg); break;
+    case 'C': add_list(&command, &commands, optarg);  break;
+    case 'h': usage(); return 0;                      break;
+    case 'm': readable = MACHINE;                     break;
+    case 'n': read_list(&node, &nodes, optarg);       break;
+    case 'N': add_list(&node, &nodes, optarg);        break;
+    case 's': simultaneity = !simultaneity;           break;
+    case 'V': version(); return 0;                    break;
+    default:  return 1;                               break;
     }
+  }
+
+  if(argc < 3) {
+    usage();
+    return 0;
   }
 
   /* add the node name */
