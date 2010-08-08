@@ -15,8 +15,8 @@ void usage(void) {
           "Usage: nspd [-d directory] [-h]\n"
           "\n"
           "Options:\n"
-          "  -d directory   Run commands in directory.\n"
-          "  -h             Display this help.\n"
+          "  -d directory   Run commands in directory\n"
+          "  -h             Display this help\n"
           "Note that this program should be run from inetd.\n"
           );
 }
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
 
   /* getopt can print our errors for us */
   opterr = 1;
-  
+
   /* parse some options */
   while((c = getopt(argc, argv, "d:h")) != -1) {
     switch(c) {
