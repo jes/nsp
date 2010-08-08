@@ -64,6 +64,19 @@ it should output machine-readable data on the first line, and human-readable
 data on the rest of the lines. For scripts that do not require this, it is OK
 just to output one line, which will be presented to the user in all cases.
 
+If your program produces numeric output, then it is best to have the
+machine-readable output begin with the number, and for the rest of the line to
+describe the information. For example:
+  2670084 1K-blocks free.
+is better than:
+  1K-blocks free: 2670084
+or just:
+  2670084
+because it means it is possible to parse by simply passing the entire line to
+atoi(), and because it still gives enough information for a human to work out
+what the line means. It is usually not important to make these considerations
+for the human-readable output.
+
 When you've written your program, copy it to the nspd directory. This is either
 the directory in which nspd is started, or the directory passed to nspd with
 the '-d' option.
