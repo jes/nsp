@@ -33,6 +33,11 @@ int show_cmd = 0;
 int readable = HUMAN;
 char *argv0;
 
+/* return 1 if c is a space, tab, or newline and 0 otherwise */
+int iswhite(int c) {
+  return c == ' ' || c == '\t' || c == '\n';
+}
+
 void usage(void) {
   fprintf(stderr,
   "nsp - Network Statistics Protocol client\n"
@@ -44,12 +49,12 @@ void usage(void) {
   "  -A               Always print command names before output\n"
   "  -b               Output both machine-readable and human-readable \n"
   "                   responses (see -m)\n"
-  "  -c command_file  Read commands from this file (see -n)\n"
-  "  -C command       Add this to the command list (see -N)\n"
+  "  -c command_file  Read commands from this file\n"
+  "  -C command       Add this to the command list\n"
   "  -h               Show this help\n"
   "  -m               Output machine-readable response only (see -b)\n"
-  "  -n node_file     Read node hostnames from this file (see -c)\n"
-  "  -N node          Add this to the node list (see -C)\n"
+  "  -n node_file     Read node hostnames from this file\n"
+  "  -N node          Add this to the node list\n"
   "  -s               Toggle simultaneity\n"
   "\n"
   "Simultaneity is how to handle ordering of commands. The default is to send\n"
@@ -91,7 +96,7 @@ void add_list(char ***list, int *len, char *item) {
 void read_list(char ***list, int *len, const char *filename) {
   FILE *fp;
   char line[BUF_SIZ];
-  char *p;
+  char *p, *end;
   int linenum = 0;
   int c;
 
@@ -105,14 +110,29 @@ void read_list(char ***list, int *len, const char *filename) {
   while(fgets(line, BUF_SIZ, fp)) {
     linenum++;
 
-    if(!(p = strchr(line, '\n')) && strlen(line) == (BUF_SIZ - 1)) {/* line too long */
+    if(!(p = strchr(line, '\n')) && strlen(line) == (BUF_SIZ - 1)) {
+      /* line too long */
       fprintf(stderr, "%s:%s:%d: line too long.\n", argv0, filename, linenum);
 
       /* now get the rest of the line out of the way */
       while(((c = getchar()) != '\n') && (c != EOF));
-    } else {/* remove endline and add copy to list */
+    } else {
+      /* remove endline */
       if(p) *p = '\0';
-      add_list(list, len, strdup(line));
+
+      /* skip leading whitespace */
+      p = line;
+      while(*p && iswhite(*p)) p++;
+
+      /* remove trailing whitespace */
+      end = p + strlen(p) - 1;
+      while(end > p && iswhite(*end)) end--;
+      if(iswhite(*++end)) *end = '\0';
+
+      /* skip empty lines and comments */
+      if(*p == '\0' || *p == '#') continue;
+
+      add_list(list, len, strdup(p));
     }
   }
 
@@ -122,7 +142,7 @@ void read_list(char ***list, int *len, const char *filename) {
 /* Outputs a line, with "host: " at the beginning if show_host is non-zero and
    "cmd: " at the beginning if show_cmd is non-zero.
    If 'line' contains a '\n', it will be replaced with a NUL byte, and then
-   put back before returning */
+   put back before returning (so make sure line is not in read-only memory) */
 void net_output(FILE *out, const char *host, const char *cmd, char *line) {
   char *p;
 
