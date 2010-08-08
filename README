@@ -1,0 +1,79 @@
+0. Contents
+-----------
+1. Compiling
+2. Usage
+3. Commands
+4. Contact
+
+1. Compiling
+------------
+
+Firstly, open up the Makefile in your editor of choice. You may want to override
+the VERSION and/or PREFIX variables.
+
+Compiling nsp is usually as simple as running:
+  $ make
+If this doesn't work, then it should be pretty simple to compile it yourself.
+Each source file makes one program, so
+  $ cc -o nsp nsp.c
+should be enough to compile the client.
+
+Once you've compiled nsp, you may want to run
+  $ make install
+which will copy nsp to $PREFIX/bin/, nspd to $PREFIX/sbin/, and the commands to
+$PREFIX/bin/nspd/, and give instructions about getting nspd working, which is
+basically just adding nspd to /etc/inetd.conf.
+
+If you don't want nspd or the commands, it is OK to simply copy nsp to anywhere
+in your path.
+
+2. Usage
+--------
+
+Running
+  $ nsp -h
+will give you some detailed information about using the nsp client. If you just
+want to connect to 'remote_machine' and run 'command', you can run
+  $ nsp remote_machine command
+which will give you the human-readable output. If you are using nsp as part of a
+script, you will probably want to use
+  $ nsp -m remote_machine command
+to get the machine-readable output.
+
+If you want to find the uptime of all of your nsp-enabled servers, you can make
+a file listing the hostnames (one per line), and run
+  $ nsp -n list_of_nodes -C uptime
+It is necessary to use -C here, otherwise nsp will think 'uptime' is a node
+rather than a command. Node and command lists may contain comments, provided
+they are on a line of their own and are prefixed with a '#'. A line like:
+  remote_machine #This is a remote machine
+will not be considered to contain a comment. Also, any leading or trailing
+whitespace in these files is ignored.
+
+You can use the rather clumsily named -a and -A options if you want hostnames or
+command names, respectively, to be printed before the corresponding output.
+
+3. Commands
+-----------
+
+It is relatively simple to write commands for nsp. Just write a program (which
+can be a shell script, an awk script, a C program, etc. as long as it will be
+run properly by execl) which produces some output on stdout. If your command
+needs to differentiate between machine-readable and human-readable output, then
+it should output machine-readable data on the first line, and human-readable
+data on the rest of the lines. For scripts that do not require this, it is OK
+just to output one line, which will be presented to the user in all cases.
+
+When you've written your program, copy it to the nspd directory. This is either
+the directory in which nspd is started, or the directory passed to nspd with
+the '-d' option.
+
+4. Contact
+----------
+
+nsp is written by James Stanley <james@incoherency.co.uk>.
+You are also likely to find me as jamesstanley in #maximilian on
+irc.freenode.net.
+
+nsp has a git repository at git://github.com/jes/nsp.git and a web page at
+http://github.com/jes/nsp

@@ -1,10 +1,10 @@
 #Makefile for NSP
 
-VERSION="0.1"
+VERSION?="0.1"
+PREFIX?=/usr/local
 
 CFLAGS=-Wall -DVERSION=\"$(VERSION)\"
 LDFLAGS=
-PREFIX=/usr/local
 COMMANDS=diskspace list load uptime
 
 all: nsp nspd
