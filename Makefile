@@ -26,7 +26,7 @@ install: all
 .PHONY: install
 
 clean:
-	rm nsp nspd
+	-rm -f nsp nspd
 .PHONY: clean
 
 nsp: nsp.c
