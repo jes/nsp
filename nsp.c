@@ -2,8 +2,8 @@
 
    James Stanley */
 
-#include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -23,9 +23,9 @@
 #define BUF_SIZ 4096
 
 /* human-readable, machine-readable, or both? */
-#define BOTH 0
-#define HUMAN 1
-#define MACHINE 2
+#define SHOW_BOTH 0
+#define SHOW_HUMAN 1
+#define SHOW_MACHINE 2
 
 char **command = NULL; /* NOTE: These two never get freed. This isn't a */
 char **node = NULL;    /* problem as we exit when we're done with them. */
@@ -34,7 +34,7 @@ int nodes = 0;
 int simultaneity = HOST_FIRST;
 int show_host = 0;
 int show_cmd = 0;
-int readable = HUMAN;
+int readable = SHOW_HUMAN;
 char *argv0;
 
 /* return 1 if c is a space, tab, or newline and 0 otherwise */
@@ -173,9 +173,9 @@ void net_output(FILE *out, const char *host, const char *cmd, char *line) {
    Warning: If host contains a colon, we will replace it with a NUL byte (but
    put it back before returning)
    If readable is:  We print:
-   BOTH             All lines
-   HUMAN            All lines except the first unless there is only one
-   MACHINE          First line only */
+   SHOW_BOTH        All lines
+   SHOW_HUMAN       All lines except the first unless there is only one
+   SHOW_MACHINE     First line only */
 void run_query(char *host, const char *command) {
   struct addrinfo *addr;
   struct addrinfo *a;
@@ -240,7 +240,7 @@ void run_query(char *host, const char *command) {
   fprintf(net, "%s\n", command);
 
   /* read first line of response */
-  if(!(l1 = fgets(line1, BUF_SIZ, net)) || readable == MACHINE) {
+  if(!(l1 = fgets(line1, BUF_SIZ, net)) || readable == SHOW_MACHINE) {
     /* we only want the first line */
     if(l1) net_output(stdout, host, command, line1);
     fclose(net);
@@ -249,7 +249,7 @@ void run_query(char *host, const char *command) {
   }
 
   /* output first line if we definitely want it */
-  if(readable == BOTH) net_output(stdout, host, command, line1);
+  if(readable == SHOW_BOTH) net_output(stdout, host, command, line1);
 
   /* read response lines */
   while(fgets(line, BUF_SIZ, net)) {
@@ -258,7 +258,7 @@ void run_query(char *host, const char *command) {
   }
 
   /* print the first line if it's human-readable and we only got one */
-  if(readable == HUMAN && printfirst) net_output(stdout, host, command, line1);
+  if(readable == SHOW_HUMAN && printfirst) net_output(stdout, host, command, line1);
 
   /* all done, dc socket */
   fclose(net);
@@ -281,11 +281,11 @@ int main(int argc, char **argv) {
     switch(c) {
     case 'a': show_host = 1;                          break;
     case 'A': show_cmd = 1;                           break;
-    case 'b': readable = BOTH;                        break;
+    case 'b': readable = SHOW_BOTH;                   break;
     case 'c': read_list(&command, &commands, optarg); break;
     case 'C': add_list(&command, &commands, optarg);  break;
     case 'h': usage(); return 0;                      break;
-    case 'm': readable = MACHINE;                     break;
+    case 'm': readable = SHOW_MACHINE;                break;
     case 'n': read_list(&node, &nodes, optarg);       break;
     case 'N': add_list(&node, &nodes, optarg);        break;
     case 's': simultaneity = !simultaneity;           break;

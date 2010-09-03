@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
   }
 
   /* execute */
-  execl(path, cmd, NULL);
+  execl(path, cmd, (char *)NULL);
 
   /* failure */
   printf("fail\n");
